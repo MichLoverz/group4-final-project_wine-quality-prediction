@@ -38,7 +38,7 @@ section[data-testid="stSidebar"] .stRadio label:hover { color: rgba(255,255,255,
 section[data-testid="stSidebar"] .stRadio [data-testid="stMarkdownContainer"] p { color: rgba(255,255,255,0.45) !important; }
 section[data-testid="stSidebar"] h1, section[data-testid="stSidebar"] h2, section[data-testid="stSidebar"] h3 { color: #fff !important; }
 section[data-testid="stSidebar"] .stCaption p { color: rgba(255,255,255,0.5) !important; font-size: 0.625rem !important; }
-section[data-testid="stSidebar"] hr { border-color: rgba(255,255,255,0.06) !important; }
+section[data-testid="stSidebar"] hr { border-color: #ffffff !important; background-color: #ffffff !important; color: #ffffff !important; opacity: 1 !important; }
 section[data-testid="stSidebar"] [role="radiogroup"] label[data-baseweb="radio"] { background: transparent; border-radius: 0.5rem; }
 /* Sidebar text + icons -> white on dark background */
 section[data-testid="stSidebar"] p, section[data-testid="stSidebar"] span, section[data-testid="stSidebar"] label, section[data-testid="stSidebar"] li { color: #fff !important; }
@@ -46,6 +46,39 @@ section[data-testid="stSidebar"] svg { fill: #fff !important; color: #fff !impor
 section[data-testid="stSidebar"] [data-testid="stMarkdownContainer"] { color: #fff !important; }
 /* Sidebar collapse/expand chevron icon -> white */
 [data-testid="stSidebarCollapseButton"] svg, [data-testid="stSidebarCollapsedControl"] svg, button[kind="header"] svg { fill: #fff !important; color: #fff !important; }
+
+/* Sidebar collapse button visibility */
+button[data-testid="stSidebarCollapseButton"] {
+    visibility: visible !important;
+    opacity: 1 !important;
+    display: flex !important;
+    position: fixed !important;
+    left: 10px !important;
+    top: 10px !important;
+    z-index: 999 !important;
+    width: 2.5rem !important;
+    height: 2.5rem !important;
+    background: linear-gradient(135deg, #a855f7, #7c3aed) !important;
+    border: none !important;
+    border-radius: 0.5rem !important;
+    padding: 0.5rem !important;
+    cursor: pointer !important;
+}
+
+button[data-testid="stSidebarCollapseButton"]:hover {
+    background: linear-gradient(135deg, #9333ea, #7c3aed) !important;
+    box-shadow: 0 4px 12px rgba(168, 85, 247, 0.4) !important;
+}
+
+button[data-testid="stSidebarCollapseButton"] svg {
+    fill: #fff !important;
+    color: #fff !important;
+}
+
+/* Sidebar position and always show */
+section[data-testid="stSidebar"] {
+    z-index: 998 !important;
+}
 
 /* Panel / Card */
 .panel { background: #fff; border-radius: 1rem; border: 1px solid #e2e8f0; box-shadow: 0 1px 4px rgba(0,0,0,0.05); overflow: hidden; padding: 1.5rem; margin-bottom: 1rem; }
@@ -163,10 +196,52 @@ section[data-testid="stSidebar"] [data-testid="stMarkdownContainer"] { color: #f
 /* Accordion fix */
 .streamlit-expanderHeader { font-weight: 600 !important; }
 
-/* Hide default Streamlit header/footer */
+/* Hide default Streamlit menu/footer/decoration, but KEEP the header itself so the
+   "expand sidebar" button stays reachable when the sidebar is collapsed. */
 #MainMenu {visibility: hidden;}
 footer {visibility: hidden;}
-header {visibility: hidden;}
+[data-testid="stDecoration"] {display: none !important;}
+[data-testid="stToolbar"] {visibility: hidden !important;}
+header[data-testid="stHeader"] {background: transparent !important;}
+
+/* Sidebar expand control (shown when the sidebar is collapsed) -> always visible & styled.
+   Streamlit 1.57 uses data-testid="stExpandSidebarButton"; older versions used
+   "stSidebarCollapsedControl"/"collapsedControl", so target all of them. */
+[data-testid="stExpandSidebarButton"],
+[data-testid="stSidebarCollapsedControl"],
+[data-testid="collapsedControl"] {
+    visibility: visible !important;
+    opacity: 1 !important;
+    z-index: 1000 !important;
+}
+[data-testid="stExpandSidebarButton"],
+[data-testid="stSidebarCollapsedControl"] button,
+[data-testid="collapsedControl"] button {
+    visibility: visible !important;
+    opacity: 1 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 2.5rem !important;
+    height: 2.5rem !important;
+    background: linear-gradient(135deg, #a855f7, #7c3aed) !important;
+    border: none !important;
+    border-radius: 0.5rem !important;
+    padding: 0.5rem !important;
+    cursor: pointer !important;
+}
+[data-testid="stExpandSidebarButton"]:hover,
+[data-testid="stSidebarCollapsedControl"] button:hover,
+[data-testid="collapsedControl"] button:hover {
+    background: linear-gradient(135deg, #9333ea, #7c3aed) !important;
+    box-shadow: 0 4px 12px rgba(168, 85, 247, 0.4) !important;
+}
+[data-testid="stExpandSidebarButton"] svg,
+[data-testid="stSidebarCollapsedControl"] svg,
+[data-testid="collapsedControl"] svg {
+    fill: #fff !important;
+    color: #fff !important;
+}
 </style>
 """, unsafe_allow_html=True)
 
@@ -194,7 +269,7 @@ def load_data():
 # SIDEBAR
 # ============================================================
 st.sidebar.markdown("""
-<div style="padding: 1rem 0.5rem 0.75rem; border-bottom: 1px solid rgba(255,255,255,0.06); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.625rem;">
+<div style="padding: 1rem 0.5rem 0.75rem; border-bottom: 1px solid #ffffff; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.625rem;">
     <div style="width: 2rem; height: 2rem; border-radius: 0.5rem; background: linear-gradient(135deg, #a855f7, #7c3aed); display: flex; align-items: center; justify-content: center; font-size: 1rem;">🍷</div>
     <span style="color: #fff; font-weight: 600; font-size: 0.875rem; letter-spacing: -0.01em;">Wine Quality ML</span>
 </div>
@@ -216,6 +291,39 @@ page = st.sidebar.radio("Navigation", nav_pages, index=default_index, label_visi
 st.sidebar.markdown("---")
 st.sidebar.caption("UCI ML Repository")
 st.sidebar.caption("Wine Quality Dataset")
+
+# Add custom JS to ensure hamburger button always works
+st.markdown("""
+<script>
+    // Ensure sidebar collapse button is always accessible
+    setTimeout(function() {
+        const collapseBtn = document.querySelector('[data-testid="stSidebarCollapseButton"]');
+        if (collapseBtn) {
+            collapseBtn.style.visibility = 'visible';
+            collapseBtn.style.opacity = '1';
+            collapseBtn.style.display = 'flex';
+            collapseBtn.style.zIndex = '999';
+        }
+    }, 100);
+    
+    // Watch for sidebar state changes and ensure button stays visible
+    const observer = new MutationObserver(function() {
+        const collapseBtn = document.querySelector('[data-testid="stSidebarCollapseButton"]');
+        if (collapseBtn) {
+            collapseBtn.style.visibility = 'visible';
+            collapseBtn.style.opacity = '1';
+            collapseBtn.style.zIndex = '999';
+        }
+    });
+    
+    observer.observe(document.body, { 
+        childList: true, 
+        subtree: true,
+        attributes: true,
+        attributeFilter: ['style', 'class']
+    });
+</script>
+""", unsafe_allow_html=True)
 
 
 # ============================================================
